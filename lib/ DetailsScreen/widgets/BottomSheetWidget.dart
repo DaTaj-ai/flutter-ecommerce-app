@@ -1,23 +1,62 @@
-
-
 import 'package:flutter/material.dart';
-
 import '../../Models/meal_response_model.dart';
+import '../../Service/NetworkService.dart';
 import '../../globalWidgets/RatingWidget.dart';
 import '../../globalWidgets/deliveryWidget.dart';
 
-class Bottomsheetwidget extends StatelessWidget {
-  Bottomsheetwidget({super.key , required this.meal});
-  Meals? meal ;
+class Bottomsheetwidget extends StatefulWidget {
+  Bottomsheetwidget({super.key, required this.meal});
+
+  Meals? meal;
+
+  @override
+  State<Bottomsheetwidget> createState() => _BottomsheetwidgetState();
+}
+
+class _BottomsheetwidgetState extends State<Bottomsheetwidget> {
+  late Future<MealsResponseModel> response;
+
+  @override
+  void initState() {
+    super.initState();
+    print("YYYYYYYYYEEEEEEEEEEESSSSSSSSSS you are here ");
+    response = NetworkService.getMealbyId(widget.meal!.idMeal!);
+  }
+
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<MealsResponseModel>(
+      future: response,
+      builder: (context, snapshot) {
+        // Handle loading state
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        // Handle error state
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        // Handle no data state
+        if (!snapshot.hasData || snapshot.data!.meals == null ||
+            snapshot.data!.meals!.isEmpty) {
+          return const Center(child: Text('No meal data available'));
+        }
+
+        final mealDetails = snapshot.data!.meals!.first;
+        return _buildContent(mealDetails);
+
+      },
+    );
+  }
+
+  Widget _buildContent(Meals mealDetails) {
     return Container(
       height: 800,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(24),
-        ),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
       child: Scaffold(
         body: Column(
@@ -32,14 +71,19 @@ class Bottomsheetwidget extends StatelessWidget {
                   top: Radius.circular(24),
                 ),
                 image: DecorationImage(
-                  image:NetworkImage(meal!.strMealThumb!), // Adjusts how the image fits the container
+                  image: NetworkImage(
+                    widget.meal!.strMealThumb!,
+                  ), // Adjusts how the image fits the container
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.only(left:  25.0 , right: 25, top: 25 ),
+                padding: const EdgeInsets.only(
+                  left: 25.0,
+                  right: 25,
+                  top: 25,
+                ),
                 child: Row(
-                  mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Image.asset("assets/images/backicon.png"),
                     Image.asset("assets/images/loveicon.png"),
@@ -49,23 +93,22 @@ class Bottomsheetwidget extends StatelessWidget {
             ),
 
             Container(
-              padding: EdgeInsets.only(left: 25 , right: 25),
+              padding: EdgeInsets.only(left: 25, right: 25),
               child: Column(
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 0),
                     child: Column(
-                      crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Title and Price Row
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween,
                           children: [
                             Flexible(
                               child: Text(
-                                meal!.strMeal!,
+                                widget.meal!.strMeal!,
                                 style: TextStyle(
                                   color: Colors.black,
                                   fontSize: 26,
@@ -85,17 +128,20 @@ class Bottomsheetwidget extends StatelessWidget {
                         ),
                         SizedBox(height: 16),
                         Row(
-                          mainAxisAlignment:
-                          MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment
+                              .spaceBetween,
                           children: [
                             // Delivery
                             DeliveryWidget(),
                             Image.asset("assets/images/timeicon.png"),
                             SizedBox(width: 4),
-                            Text("45 min", style: TextStyle(color: Color(0xFF7E8392))),
+                            Text(
+                              "45 min",
+                              style: TextStyle(color: Color(0xFF7E8392)),
+                            ),
 
                             // Rating
-                            RatingWidget(),
+                            RatingWidget(ratingColor: Colors.black),
                           ],
                         ),
                       ],
@@ -104,8 +150,8 @@ class Bottomsheetwidget extends StatelessWidget {
                   SizedBox(width: 12),
 
                   Text(
-                    "oldjlsdi"
-                    ,
+                    mealDetails.strInstructions ??
+                        "No instructions available",
                     style: TextStyle(color: Color(0xFFFF646982)),
                   ),
                 ],
@@ -119,8 +165,7 @@ class Bottomsheetwidget extends StatelessWidget {
           builder: (context) {
             return ClipRRect(
               borderRadius: BorderRadius.vertical(
-                top: Radius.circular(24),
-              ),
+                  top: Radius.circular(24)),
               child: Container(
                 color: Color(0xFFF242731),
                 height: 200,
@@ -143,43 +188,50 @@ class Bottomsheetwidget extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              ClipOval(
-                                child: Image.asset(
-                                  "assets/images/item.png",
-                                  width: 40,
-                                  height: 40,
+                  SizedBox(
+                    height: 120,
+                    child: ListView.builder(
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                ClipOval(
+                                  child: Image.asset(
+                                    "assets/images/item.png",
+                                    width: 40,
+                                    height: 40,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(width: 16),
-                              Text(
-                                "Pepperoni",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
+                                SizedBox(width: 16),
+                                Text(
+                                  "Pepperoni",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: 24,
-                            height: 24,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent,
-                              border: Border.all(
-                                color: Color(0xFFFF6B57),
-                                width: 2,
+                              ],
+                            ),
+                            Container(
+                              width: 24,
+                              height: 24,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.transparent,
+                                border: Border.all(
+                                  color: Color(0xFFFF6B57),
+                                  width: 2,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                     ],
                   ),
                 ),
@@ -197,10 +249,7 @@ class Bottomsheetwidget extends StatelessWidget {
               ),
               Text(
                 "2",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
               IconButton(
                 onPressed: () {},
@@ -227,6 +276,7 @@ class Bottomsheetwidget extends StatelessWidget {
                   ),
                 ),
               ),
+
             ],
           ),
         ),
@@ -234,4 +284,5 @@ class Bottomsheetwidget extends StatelessWidget {
       ),
     );
   }
+
 }

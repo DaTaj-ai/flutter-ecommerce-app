@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class RatingWidget extends StatelessWidget {
-  const RatingWidget({super.key});
-
+  const RatingWidget({super.key , required this.ratingColor });
+  final Color ratingColor   ;
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -16,7 +16,7 @@ class RatingWidget extends StatelessWidget {
           style: TextStyle(
             decoration:
             TextDecoration.underline,
-            color: Colors.black,
+            color: ratingColor,
             fontSize: 16,
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../ DetailsScreen/widgets/CategoryItemWidget.dart';
+import 'CategoryItemWidget.dart';
 import '../../Models/category_response_model.dart';
 import '../../Service/ApiEndPoint.dart';
 import '../../Service/NetworkService.dart';
@@ -21,7 +21,6 @@ class _CategoryListWidgetState extends State<CategoryListWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     response = NetworkService.getCategorise(
       ApiEndpoints.category,

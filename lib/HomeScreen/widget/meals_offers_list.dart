@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterlab3/Models/meal_response_model.dart';
 
-import '../../ DetailsScreen/widgets/OffersCard.dart';
+import 'meals_offers_card_item.dart';
 import '../../Service/NetworkService.dart';
 
 
@@ -22,10 +22,7 @@ class _MealsOffersListState extends State<MealsOffersList> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    print("WE are in Meals List ");
-    print("Alama ------ widget.selectedCategory${widget.selectedCategory}");
-
+    response = NetworkService.getMealsByCategory(widget.selectedCategory??"SeaFood");
 
   }
 
@@ -37,7 +34,7 @@ class _MealsOffersListState extends State<MealsOffersList> {
 
     print("WE are in Meals List ");
     print("Alama ----- ${widget.selectedCategory}");
-    response = NetworkService.getMeals(widget.selectedCategory??"SeaFood");
+    response = NetworkService.getMealsByCategory(widget.selectedCategory??"SeaFood");
   }
 
   @override
@@ -51,7 +48,7 @@ class _MealsOffersListState extends State<MealsOffersList> {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (snapshot.hasData) {
           return ListView.builder(
-            itemCount: 4 /*snapshot.data!.meals?.length*/,
+            itemCount: snapshot.data!.meals!.length /*snapshot.data!.meals?.length*/,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return OffersCard(meal: snapshot.data!.meals![index]);

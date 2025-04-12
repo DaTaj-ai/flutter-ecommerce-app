@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterlab3/Onboarding_01Screen/OnBoardingScreen01.dart';
 
-import '../ DetailsScreen/DetailsScreen.dart';
+import '../HomeScreen/home_screen.dart';
 import '../CardScreen/CardScreen.dart';
 import '../SignUpScreen/SignUpScreen.dart';
 import '../main.dart';
@@ -14,7 +14,7 @@ class RouterGenerator {
       case AppRoutes.home:
         return MaterialPageRoute(
           builder: (context) {
-            return DetailsScreen();
+            return HomeScreenUi();
           },
         );
       case AppRoutes.onBoarding:
@@ -44,7 +44,7 @@ class RouterGenerator {
       case AppRoutes.details_Bottom_sheet:
         return MaterialPageRoute(
           builder: (context) {
-            return DetailsScreen();
+            return HomeScreenUi();
           },
         );
 
