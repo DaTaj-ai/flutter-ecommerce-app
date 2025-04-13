@@ -16,7 +16,15 @@ class OffersCard extends StatelessWidget {
           context: context,
           backgroundColor: Colors.transparent,
           isScrollControlled: true,
-          builder: (context) => Bottomsheetwidget(meal: meal),
+          builder: (context) {
+            return FractionallySizedBox(
+              heightFactor: 0.9, // 80% of screen height
+              child: ClipRRect(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+                child: MealDetailsScreen(meal: meal),
+              ),
+            );
+          },
         );
       },
       child: Container(
